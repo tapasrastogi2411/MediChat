@@ -1,15 +1,16 @@
-'use client'
-import { useState, useEffect, useRef } from 'react';
-import Message from './Message';
+"use client";
+import { useState, useEffect, useRef } from "react";
+// import { supabase } from '@supabase/supabase-js';
+import Message from "./Message";
 
 function Chat() {
     const [messages, setMessages] = useState([]);
-    const [newMessage, setNewMessage] = useState('');
-    const [sender, setSender] = useState('doctor'); // New state for sender
+    const [newMessage, setNewMessage] = useState("");
+    const [sender, setSender] = useState("doctor"); // New state for sender
     const messagesEndRef = useRef(null); // New ref for the last message
 
     const handleSend = () => {
-        if (newMessage.trim() === '') {
+        if (newMessage.trim() === "") {
             // Don't send the message if it's empty
             return;
         }
@@ -21,7 +22,13 @@ function Chat() {
             timestamp: new Date(),
         };
         setMessages([...messages, message]);
-        setNewMessage('');
+        setNewMessage("");
+    };
+
+    // Deleting a message and image upload
+    const handleDelete = (id) => {
+        const deletedMessages = messages.filter((message) => message.id !== id);
+        setMessages(deletedMessages);
     };
 
     const handleImageUpload = (event) => {
@@ -43,21 +50,26 @@ function Chat() {
         }
     };
 
-    const toggleSender = () => { // New function to toggle sender
-        setSender(sender === 'doctor' ? 'patient' : 'doctor');
+    const toggleSender = () => {
+        // New function to toggle sender
+        setSender(sender === "doctor" ? "patient" : "doctor");
     };
 
     useEffect(() => {
         if (messagesEndRef.current) {
-            messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
         }
     }, [messages]);
 
     return (
         <div className="flex flex-col h-screen bg-gray-100">
             <div className="overflow-auto">
-                {messages.map(message => (
-                    <Message key={message.id} message={message} />
+                {messages.map((message) => (
+                    <Message
+                        key={message.id}
+                        message={message}
+                        onDelete={handleDelete}
+                    />
                 ))}
                 <div ref={messagesEndRef} /> {/* New div for the ref */}
             </div>
@@ -65,7 +77,7 @@ function Chat() {
                 <input
                     className="flex-1 px-4 py-2 text-gray-700 bg-gray-200 rounded-lg focus:outline-none"
                     value={newMessage}
-                    onChange={e => setNewMessage(e.target.value)}
+                    onChange={(e) => setNewMessage(e.target.value)}
                 />
                 <input
                     type="file"
@@ -83,7 +95,7 @@ function Chat() {
                     className="ml-4 px-4 py-2 text-white bg-green-500 rounded-lg focus:outline-none"
                     onClick={toggleSender}
                 >
-                    Switch to {sender === 'doctor' ? 'patient' : 'doctor'}
+                    Switch to {sender === "doctor" ? "patient" : "doctor"}
                 </button>
             </div>
         </div>

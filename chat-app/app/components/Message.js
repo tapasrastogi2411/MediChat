@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-function Message({ message }) {
+function Message({ message, onDelete }) {
     const messageRef = useRef(null);
 
     useEffect(() => {
@@ -25,11 +25,17 @@ function Message({ message }) {
                 <img
                     src={message.image}
                     alt="Uploaded content"
-                    className="w-full h-auto max-w-md max-h-100"
+                    className="w-full h-auto max-w-md max-h-100 pt-3 pb-2"
                 />
             ) : (
                 <p>{message.text}</p>
             )}
+            <button
+                onClick={() => onDelete(message.id)}
+                className="mt-2 px-2 py-1  text-sm text-white bg-red-500 rounded hover:bg-red-600"
+            >
+                Delete
+            </button>
         </div>
     );
 }
