@@ -4,6 +4,12 @@ function Message({ message, onDelete }) {
     const messageRef = useRef(null);
 
     useEffect(() => {
+        if (messageRef.current) {
+            messageRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [message]);
+
+    useEffect(() => {
         if (message.image && messageRef.current) {
             const img = new Image();
             img.src = message.image;

@@ -31,6 +31,7 @@ function Chat() {
         setMessages(deletedMessages);
     };
 
+    // New function to handle image upload
     const handleImageUpload = (event) => {
         const file = event.target.files[0];
         const reader = new FileReader();
@@ -50,16 +51,11 @@ function Chat() {
         }
     };
 
+    // New function to toggle sender
     const toggleSender = () => {
-        // New function to toggle sender
         setSender(sender === "doctor" ? "patient" : "doctor");
     };
 
-    useEffect(() => {
-        if (messagesEndRef.current) {
-            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-        }
-    }, [messages]);
 
     return (
         <div className="flex flex-col h-screen bg-gray-100">
