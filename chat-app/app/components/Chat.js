@@ -10,6 +10,11 @@ function Chat() {
   const messagesEndRef = useRef(null); // New ref for the last message
 
   const handleSend = () => {
+    if (newMessage.trim() === '') {
+      // Don't send the message if it's empty
+      return;
+    }
+
     const message = {
       id: Date.now(),
       sender: sender, // Use the sender state here
