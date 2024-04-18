@@ -1,10 +1,10 @@
-import Layout from './layout'
-import Chat from './components/Chat'
+import Layout from "./layout";
+import Chat from "./components/Chat";
 
 export default function Page() {
-  return (
-    <Layout title="Home">
-      <Chat />
-    </Layout>
-  )
+    return (
+        <Layout title="Home">
+            <Chat />
+        </Layout>
+    );
 }
