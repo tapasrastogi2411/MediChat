@@ -20,6 +20,25 @@ function Chat() {
     setNewMessage('');
   };
 
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      const message = {
+        id: Date.now(),
+        sender: sender,
+        image: reader.result,
+        timestamp: new Date(),
+      };
+      setMessages([...messages, message]);
+    };
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  };
+
   const toggleSender = () => { // New function to toggle sender
     setSender(sender === 'doctor' ? 'patient' : 'doctor');
   };
@@ -43,6 +62,12 @@ function Chat() {
           className="flex-1 px-4 py-2 text-gray-700 bg-gray-200 rounded-lg focus:outline-none"
           value={newMessage}
           onChange={e => setNewMessage(e.target.value)}
+        />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageUpload}
+          className="ml-4 px-4 py-2 text-white bg-purple-500 rounded-lg focus:outline-none"
         />
         <button 
           className="ml-4 px-4 py-2 text-white bg-blue-500 rounded-lg focus:outline-none"
