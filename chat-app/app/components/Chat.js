@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-// import { supabase } from '@supabase/supabase-js';
+import { supabase } from "../lib/supabase";
+import { v4 as uuidv4 } from "uuid";
 import Message from "./Message";
 
 function Chat() {
@@ -9,28 +10,59 @@ function Chat() {
     const [sender, setSender] = useState("doctor"); // New state for sender
     const messagesEndRef = useRef(null); // New ref for the last message
 
-    const handleSend = () => {
+    const handleSend = async () => {
         if (newMessage.trim() === "") {
             // Don't send the message if it's empty
             return;
         }
 
         const message = {
-            id: Date.now(),
+            id: uuidv4(),
             sender: sender, // Use the sender state here
             text: newMessage,
-            timestamp: new Date(),
+            created_at: new Date(),
         };
+
+        // Insert the new message into the Supabase messages table
+        const { error } = await supabase.from("messages").insert([message]);
+
+        if (error) {
+            console.error("Error inserting message:", error);
+            return;
+        }
+
         setMessages([...messages, message]);
         setNewMessage("");
     };
 
-    // Deleting a message and image upload
-    const handleDelete = (id) => {
+    // Fetching messages from the Supabase messages table
+    useEffect(() => {
+        const fetchMessages = async () => {
+            const { data, error } = await supabase.from("messages").select("*");
+            if (error) {
+                console.error("Error fetching messages:", error);
+                return;
+            }
+            setMessages(data);
+        };
+
+        fetchMessages();
+    }, []);
+
+    // Deleting a message
+    const handleDeleteMessage = async (id) => {
+        // Delete the message from the Supabase messages table
+        const { error } = await supabase.from("messages").delete().eq("id", id);
+        console.log("Deleting message with id:", id);
+        if (error) {
+            console.error("Error deleting message:", error);
+            return;
+        }
         const deletedMessages = messages.filter((message) => message.id !== id);
         setMessages(deletedMessages);
     };
 
+    // New function to handle image upload
     const handleImageUpload = (event) => {
         const file = event.target.files[0];
         const reader = new FileReader();
@@ -50,16 +82,25 @@ function Chat() {
         }
     };
 
-    const toggleSender = () => {
-        // New function to toggle sender
-        setSender(sender === "doctor" ? "patient" : "doctor");
+    // Deleting an image
+    const handleDeleteImage = async (id) => {
+        // Delete the image from the Supabase images table
+        const { error } = await supabase.storage
+            .from("message-images")
+            .remove([`image_${id}`]);
+        console.log("Deleting image with id:", id);
+        if (error) {
+            console.error("Error deleting image:", error);
+            return;
+        }
+        const deletedImages = messages.filter((image) => image.id !== id);
+        setMessages(deletedImages);
     };
 
-    useEffect(() => {
-        if (messagesEndRef.current) {
-            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-        }
-    }, [messages]);
+    // New function to toggle sender
+    const toggleSender = () => {
+        setSender(sender === "doctor" ? "patient" : "doctor");
+    };
 
     return (
         <div className="flex flex-col h-screen bg-gray-100">
@@ -68,7 +109,8 @@ function Chat() {
                     <Message
                         key={message.id}
                         message={message}
-                        onDelete={handleDelete}
+                        onDeleteMessage={handleDeleteMessage}
+                        onDeleteImage={handleDeleteImage}
                     />
                 ))}
                 <div ref={messagesEndRef} /> {/* New div for the ref */}
