@@ -21,9 +21,14 @@ https://medi-chat-pi.vercel.app/
 ## Caveats
 - Images uploaded are not stored anywhere so they perish once the page is refreshed
 
-## Landing Page
+## Screenshots of the site
+- Landing page
+
 ![image](https://github.com/tapasrastogi2411/MediChat/assets/56613320/5a175e9f-5434-4434-8a9a-08f5e5b9ac69)
 
+- Image upload
+
+![image](https://github.com/tapasrastogi2411/MediChat/assets/56613320/16eaab9d-a2d5-4393-a4f3-b9bfeccf4836)
 
 
   
