@@ -3,6 +3,8 @@ import { useEffect, useRef } from "react";
 function Message({ message, onDeleteMessage, onDeleteImage}) {
     const messageRef = useRef(null);
 
+    const CDNURL = "https://wddpjsbgtkxmqvnkxhih.supabase.co/storage/v1/object/public/message-images/";
+
     useEffect(() => {
         if (messageRef.current) {
             messageRef.current.scrollIntoView({ behavior: "smooth" });
@@ -10,9 +12,9 @@ function Message({ message, onDeleteMessage, onDeleteImage}) {
     }, [message]);
 
     useEffect(() => {
-        if (message.image && messageRef.current) {
+        if (message.imageURL && messageRef.current) {
             const img = new Image();
-            img.src = message.image;
+            img.src = message.imageURL;
             img.onload = () => {
                 messageRef.current.scrollIntoView({ behavior: "smooth" });
             };
@@ -27,10 +29,10 @@ function Message({ message, onDeleteMessage, onDeleteImage}) {
             }`}
         >
             <p className="font-bold">{message.sender}</p>
-            {message.image ? (
+            {message.imageURL ? (
                 <>
                     <img
-                        src={message.image}
+                        src={message.imageURL}
                         alt="Uploaded content"
                         className="w-full h-auto max-w-md max-h-100 pt-3 pb-2"
                     />

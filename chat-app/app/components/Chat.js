@@ -4,6 +4,9 @@ import { supabase } from "../lib/supabase";
 import { v4 as uuidv4 } from "uuid";
 import Message from "./Message";
 
+const CDNURL =
+    "https://wddpjsbgtkxmqvnkxhih.supabase.co/storage/v1/object/public/message-images/";
+
 function Chat() {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
@@ -21,6 +24,7 @@ function Chat() {
             sender: sender, // Use the sender state here
             text: newMessage,
             created_at: new Date(),
+            // imageURL: null,
         };
 
         // Insert the new message into the Supabase messages table
@@ -63,22 +67,25 @@ function Chat() {
     };
 
     // New function to handle image upload
-    const handleImageUpload = (event) => {
+    const handleImageUpload = async (event) => {
         const file = event.target.files[0];
-        const reader = new FileReader();
 
-        reader.onloadend = () => {
+        // Upload the image to the Supabase message-images storage
+        const { data, error } = await supabase.storage
+            .from("message-images")
+            .upload("public/" + file?.name, file);
+
+        if (data) {
             const message = {
-                id: Date.now(),
+                id: uuidv4(),
                 sender: sender,
-                image: reader.result,
-                timestamp: new Date(),
+                imageURL: CDNURL + 'public/' + file?.name,
+                created_at: new Date(),
             };
+            // Add this to the messages state
             setMessages([...messages, message]);
-        };
-
-        if (file) {
-            reader.readAsDataURL(file);
+        } else {
+            console.log(error);
         }
     };
 
