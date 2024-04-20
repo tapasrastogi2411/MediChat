@@ -79,7 +79,8 @@ function Chat() {
             const message = {
                 id: uuidv4(),
                 sender: sender,
-                imageURL: CDNURL + 'public/' + file?.name,
+                imageURL: CDNURL + "public/" + file?.name,
+                imageName: "public/" + file?.name,
                 created_at: new Date(),
             };
             // Add this to the messages state
@@ -90,17 +91,19 @@ function Chat() {
     };
 
     // Deleting an image
-    const handleDeleteImage = async (id) => {
+    const handleDeleteImage = async (imageName) => {
         // Delete the image from the Supabase images table
         const { error } = await supabase.storage
             .from("message-images")
-            .remove([`image_${id}`]);
-        console.log("Deleting image with id:", id);
+            .remove([imageName]);
+        console.log("Deleting image with imageName", imageName);
         if (error) {
             console.error("Error deleting image:", error);
             return;
         }
-        const deletedImages = messages.filter((image) => image.id !== id);
+        const deletedImages = messages.filter(
+            (image) => image.imageName !== imageName
+        );
         setMessages(deletedImages);
     };
 

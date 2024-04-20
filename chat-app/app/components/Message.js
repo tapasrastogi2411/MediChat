@@ -1,9 +1,10 @@
 import { useEffect, useRef } from "react";
 
-function Message({ message, onDeleteMessage, onDeleteImage}) {
+function Message({ message, onDeleteMessage, onDeleteImage }) {
     const messageRef = useRef(null);
 
-    const CDNURL = "https://wddpjsbgtkxmqvnkxhih.supabase.co/storage/v1/object/public/message-images/";
+    const CDNURL =
+        "https://wddpjsbgtkxmqvnkxhih.supabase.co/storage/v1/object/public/message-images/";
 
     useEffect(() => {
         if (messageRef.current) {
@@ -37,7 +38,7 @@ function Message({ message, onDeleteMessage, onDeleteImage}) {
                         className="w-full h-auto max-w-md max-h-100 pt-3 pb-2"
                     />
                     <button
-                        onClick={() => onDeleteImage(message.id)}
+                        onClick={() => onDeleteImage(message.imageName)}
                         className="mt-2 px-2 py-1  text-sm text-white bg-red-500 rounded hover:bg-red-600"
                     >
                         Delete Image
